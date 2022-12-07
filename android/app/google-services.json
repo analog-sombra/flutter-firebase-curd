@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "206776602718",
+    "project_id": "fbasedbtuto",
+    "storage_bucket": "fbasedbtuto.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206776602718:android:6e38091c714968d9efe4cf",
+        "android_client_info": {
+          "package_name": "com.example.fbasedbtuto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "206776602718-09ovorlleskitm0ckfoe7dak4vrds73t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB2h7PncWLArRryG_ezCMEua-WmcgkWRU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "206776602718-09ovorlleskitm0ckfoe7dak4vrds73t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
