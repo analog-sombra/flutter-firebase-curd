@@ -1,3 +1,4 @@
+import 'package:fbasedbtuto/components/buttons.dart';
 import 'package:fbasedbtuto/state/userstate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,6 +11,7 @@ class AddUser extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     TextEditingController name = useTextEditingController();
     TextEditingController email = useTextEditingController();
+    ValueNotifier<bool> isLoading = useState(false);
     final userStateW = ref.watch(userState);
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
@@ -26,157 +28,196 @@ class AddUser extends HookConsumerWidget {
           ),
         ),
       ),
-      body: SafeArea(
-        child: Center(
-          child: Container(
-            margin: const EdgeInsets.all(15),
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 6)
-              ],
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xff22d3ee),
-                  Color(0xff0284c7),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+      body: isLoading.value
+          ? const Center(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: CircularProgressIndicator(),
               ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(15.0),
-                    child: Text(
-                      "Add New User",
-                      textScaleFactor: 1,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                TextField(
-                  style: const TextStyle(
+            )
+          : SafeArea(
+              child: Center(
+                child: Container(
+                  margin: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  controller: name,
-                  decoration: InputDecoration(
-                    suffixIcon: const Icon(
-                      Icons.person_outline,
-                      color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.2), blurRadius: 6)
+                    ],
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xff22d3ee),
+                        Color(0xff0284c7),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    hintText: "Enter Name...",
-                    hintStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  controller: email,
-                  decoration: InputDecoration(
-                    suffixIcon: const Icon(
-                      Icons.mail_outlined,
-                      color: Colors.white,
-                    ),
-                    hintText: "Enter Email...",
-                    hintStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SizedBox(
-                      width: 100,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff22c55e)),
-                        onPressed: () {
-                          userStateW.addUser(context, name.text, email.text);
-                          name.clear();
-                          email.clear();
-                        },
-                        child: const Text(
-                          "ADD",
-                          textScaleFactor: 1,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(15.0),
+                            child: Text(
+                              "Add New User",
+                              textScaleFactor: 1,
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 100,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xfff43f5e)),
-                        onPressed: () {
-                          name.clear();
-                          email.clear();
-                        },
-                        child: const Text(
-                          "RESET",
-                          textScaleFactor: 1,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
+                        Center(
+                          child: InkWell(
+                            onTap: () {
+                              userStateW.pickImage(context);
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: SizedBox(
+                                width: 100,
+                                height: 100,
+                                child: (userStateW.imageFile == null)
+                                    ? Image.asset(
+                                        "assets/images/avatar.png",
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.file(
+                                        userStateW.imageFile!,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        if (userStateW.imageFile != null) ...[
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Center(
+                            child: Text(
+                              userStateW.imageFile!.path
+                                  .toString()
+                                  .split("/")
+                                  .last,
+                              textScaleFactor: 1,
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextField(
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          controller: name,
+                          decoration: InputDecoration(
+                            suffixIcon: const Icon(
+                              Icons.person_outline,
+                              color: Colors.white,
+                            ),
+                            hintText: "Enter Name...",
+                            hintStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.2),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextField(
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          controller: email,
+                          decoration: InputDecoration(
+                            suffixIcon: const Icon(
+                              Icons.mail_outlined,
+                              color: Colors.white,
+                            ),
+                            hintText: "Enter Email...",
+                            hintStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.2),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: CusBtn(
+                                btnColor: const Color(0xff22c55e),
+                                btnText: "ADD",
+                                textSize: 16,
+                                btnFunction: () {
+                                  isLoading.value = true;
+                                  userStateW.addUser(
+                                      context, name.text, email.text);
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: CusBtn(
+                                btnColor: const Color(0xfff43f5e),
+                                btnText: "RESET",
+                                textSize: 16,
+                                btnFunction: () {
+                                  isLoading.value = true;
+                                  userStateW.addUser(
+                                      context, name.text, email.text);
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
                     ),
-                  ],
-                )
-              ],
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
