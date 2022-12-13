@@ -29,9 +29,14 @@ class UserState extends ChangeNotifier {
 
       imageFile = imageTemp;
     } on PlatformException catch (e) {
-      erroralert(context, "Error", 'Failed to pick image: $e');
+      erroralert(context, "Error", 'Failed to pick image: $e.');
     }
     notifyListeners();
+  }
+
+  Future<int> getUserCount() async {
+    final res = await usersdb.get();
+    return res.size;
   }
 
   //get all user data on request
@@ -41,14 +46,14 @@ class UserState extends ChangeNotifier {
     notifyListeners();
   }
 
-//add new user data
+  //add new user data
   Future<void> addUser(BuildContext context, String name, String email) async {
     if (imageFile == null) {
-      erroralert(context, "Error", "Please Select the image");
-    } else if (name == "") {
-      erroralert(context, "Error", "Please Fill the name..");
-    } else if (email == "") {
-      erroralert(context, "Error", "Please Fill the email..");
+      erroralert(context, "Error", "Please Select the image.");
+    } else if (await isNameExist(name)) {
+      erroralert(context, "Error", "Name alredy exist, Try a diffrent name.");
+    } else if (await isEmailExist(email)) {
+      erroralert(context, "Error", "Email alredy exist, Try a diffrent email.");
     } else {
       await uploadAvatar(context, name);
       usersdb.add({
@@ -64,42 +69,48 @@ class UserState extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteUser(BuildContext context, String id, String name) async {
+  Future<void> deleteUser(
+      BuildContext context, String id, String name, String imageUrl) async {
     usersdb.doc(id).delete().then((value) {
       susalert(context, "Deleted", "Successfully deleted user $name.");
     }).catchError((error) {
       erroralert(context, "Error", error.toString());
     });
+    await deleteFile(context, imageUrl);
     notifyListeners();
   }
 
-  Future<void> updateUser(
-      BuildContext context, String id, String name, String email) async {
-    if (name == "") {
-      erroralert(context, "Error", "Please Fill the name..");
-    } else if (email == "") {
-      erroralert(context, "Error", "Please Fill the email..");
+  Future<void> deleteMultiUser(BuildContext context, List users) async {
+    for (int i = 0; i < users.length; i++) {
+      usersdb.doc(users[i]["id"]).delete().then((value) {}).catchError((error) {
+        erroralert(context, "Error", error.toString());
+      });
+      await deleteFile(context, users[i]["imageUrl"]);
+    }
+    notifyListeners();
+  }
+
+  Future<void> updateUser(BuildContext context, String id, String name,
+      String email, String avatar) async {
+    if (await isNameExist(name)) {
+      erroralert(context, "Error", "Name alredy exist, Try a diffrent name.");
+    } else if (await isEmailExist(email)) {
+      erroralert(context, "Error", "Email alredy exist, Try a diffrent email.");
     } else {
-      if (imageFile != null) {
+      final userdata = {"name": name, "email": email};
+
+      if (imageFile != null && avatarDownloadUrl != null) {
+        await deleteFile(context, avatar);
         await uploadAvatar(context, name);
-        usersdb.doc(id).update({
-          "name": name,
-          "email": email,
-          "avatar": avatarDownloadUrl,
-        }).then((value) {
-          susalert(context, "Updated", "Successfully updated user $name.");
-          Navigator.pop(context);
-        }).catchError((error) {
-          erroralert(context, "Error", error.toString());
-        });
-      } else {
-        usersdb.doc(id).update({"name": name, "email": email}).then((value) {
-          susalert(context, "Updated", "Successfully updated user $name.");
-          Navigator.pop(context);
-        }).catchError((error) {
-          erroralert(context, "Error", error.toString());
-        });
+        userdata["avatar"] = avatarDownloadUrl!;
       }
+
+      usersdb.doc(id).update(userdata).then((value) {
+        susalert(context, "Updated", "Successfully updated user $name.");
+        Navigator.pop(context);
+      }).catchError((error) {
+        erroralert(context, "Error", error.toString());
+      });
     }
   }
 
@@ -117,6 +128,37 @@ class UserState extends ChangeNotifier {
 
     final urlDownload = await snapshot.ref.getDownloadURL();
     avatarDownloadUrl = urlDownload;
+  }
+
+  Future<void> deleteFile(BuildContext context, String imageUrl) async {
+    final ref = FirebaseStorage.instance.refFromURL(imageUrl);
+    await ref.delete().then((value) => {}).catchError((error) {
+      erroralert(context, "Error", error.toString());
+    });
+  }
+
+  Future<void> deleteMultiFile(
+      BuildContext context, List<String> imageUrls) async {
+    for (int i = 0; i < imageUrls.length; i++) {
+      final ref = FirebaseStorage.instance.refFromURL(imageUrls[i]);
+      await ref.delete().then((value) => {}).catchError((error) {
+        erroralert(context, "Error", error.toString());
+      });
+    }
+  }
+
+  Future<bool> isEmailExist(String email) async {
+    return await usersdb
+        .where("email", isEqualTo: email)
+        .get()
+        .then((value) => value.size > 0 ? true : false);
+  }
+
+  Future<bool> isNameExist(String name) async {
+    return await usersdb
+        .where("name", isEqualTo: name)
+        .get()
+        .then((value) => value.size > 0 ? true : false);
   }
 }
 

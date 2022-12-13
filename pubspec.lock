@@ -8,13 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.9"
-  animated_theme_switcher:
-    dependency: "direct main"
-    description:
-      name: animated_theme_switcher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.7"
   async:
     dependency: transitive
     description:
@@ -28,7 +21,7 @@ packages:
       name: awesome_snackbar_content
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.9"
+    version: "0.1.0"
   boolean_selector:
     dependency: transitive
     description:

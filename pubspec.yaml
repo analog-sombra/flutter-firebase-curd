@@ -40,11 +40,10 @@ dependencies:
   hooks_riverpod: ^2.1.1
   go_router: ^5.2.1
   cloud_firestore: ^4.1.0
-  awesome_snackbar_content: ^0.0.8
+  awesome_snackbar_content: ^0.1.0
   cached_network_image: ^3.2.3
   image_picker: ^0.8.6
   firebase_storage: ^11.0.6
-  animated_theme_switcher: ^2.0.7
 
 dev_dependencies:
   flutter_test:

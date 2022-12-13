@@ -1,4 +1,3 @@
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:fbasedbtuto/services/firebase.dart';
 import 'package:fbasedbtuto/views/homepage.dart';
 import 'package:flutter/material.dart';
@@ -19,26 +18,21 @@ class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final firebaseAppW = ref.watch(firebaseApp);
-    return ThemeProvider(
-      initTheme: ThemeData.light(),
-      builder: (p0, theme) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Flutter CURD App',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter CURD App',
+      home: firebaseAppW.when(
+        data: (data) => const HomePage(),
+        error: (err, stack) => Center(
+          child: Center(
+            child: Text("Error: $err"),
           ),
-          home: firebaseAppW.when(
-            data: (data) => const HomePage(),
-            error: (err, stack) => Center(
-              child: Center(child: Text("Error: $err")),
-            ),
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
-        );
-      },
+        ),
+        loading: () => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
     );
   }
 }
