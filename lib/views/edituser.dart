@@ -150,6 +150,7 @@ class EditUser extends HookConsumerWidget {
                                 .hasMatch(value)) {
                               return "Name should not contain special characters";
                             }
+
                             return null;
                           },
                           maxLength: 10,
@@ -195,6 +196,8 @@ class EditUser extends HookConsumerWidget {
                                     r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
                                 .hasMatch(value)) {
                               return "Your email is not valid, Try again...";
+                            } else if (value.contains(" ")) {
+                              return "Email connot containes space";
                             }
                             return null;
                           },
@@ -243,15 +246,18 @@ class EditUser extends HookConsumerWidget {
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xff22c55e)),
                                 onPressed: () async {
-                                  isLoading.value = true;
-                                  await userStateW.updateUser(
-                                    context,
-                                    id,
-                                    name.text,
-                                    email.text,
-                                    user.value["avatar"],
-                                  );
-                                  isLoading.value = false;
+                                  if (formKey.currentState!.validate()) {
+                                    isLoading.value = true;
+
+                                    await userStateW.updateUser(
+                                      context,
+                                      id,
+                                      name.text,
+                                      email.text,
+                                      user.value["avatar"],
+                                    );
+                                    isLoading.value = false;
+                                  }
                                 },
                                 child: const Text(
                                   "UPDATE",

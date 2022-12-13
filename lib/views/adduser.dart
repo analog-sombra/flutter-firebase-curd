@@ -192,6 +192,8 @@ class AddUser extends HookConsumerWidget {
                                       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
                                   .hasMatch(value)) {
                                 return "Your email is not valid, Try again...";
+                              } else if (value.contains(" ")) {
+                                return "Email connot containes space";
                               }
                               return null;
                             },

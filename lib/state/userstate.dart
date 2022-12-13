@@ -92,10 +92,8 @@ class UserState extends ChangeNotifier {
 
   Future<void> updateUser(BuildContext context, String id, String name,
       String email, String avatar) async {
-    if (await isNameExist(name)) {
+    if (await isNameExist(name) && await isEmailExist(email)) {
       erroralert(context, "Error", "Name alredy exist, Try a diffrent name.");
-    } else if (await isEmailExist(email)) {
-      erroralert(context, "Error", "Email alredy exist, Try a diffrent email.");
     } else {
       final userdata = {"name": name, "email": email};
 

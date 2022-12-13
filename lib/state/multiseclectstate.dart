@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -22,6 +20,7 @@ class MultiSelectState extends ChangeNotifier {
     for (int i = 0; i < val; i++) {
       selectedItem.add(false);
     }
+    notifyListeners();
   }
 
   void setValue(int index, bool val, id, imageUrl) {
@@ -37,6 +36,16 @@ class MultiSelectState extends ChangeNotifier {
       isMultiSelect = false;
     }
 
+    notifyListeners();
+  }
+
+  void clearSelection(int val) {
+    selectedItem = [];
+    userDelete = [];
+    for (int i = 0; i < val; i++) {
+      selectedItem.add(false);
+    }
+    isMultiSelect = false;
     notifyListeners();
   }
 }
