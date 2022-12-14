@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final multiSelectState = ChangeNotifierProvider.autoDispose<MultiSelectState>(
+final multiSelectState = ChangeNotifierProvider<MultiSelectState>(
   (ref) => MultiSelectState(),
 );
 
@@ -23,7 +23,7 @@ class MultiSelectState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setValue(int index, bool val, id, imageUrl) {
+  void setValue(int index, bool val, String id, String imageUrl) {
     selectedItem[index] = val;
     final user = {"id": id, "imageUrl": imageUrl};
 

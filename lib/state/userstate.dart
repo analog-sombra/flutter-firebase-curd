@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -21,13 +22,21 @@ class UserState extends ChangeNotifier {
 
   File? imageFile;
   String? avatarDownloadUrl;
+  UploadTask? uploadTask;
+  List seachList = [];
   Future pickImage(BuildContext context) async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
       final imageTemp = File(image.path);
-
-      imageFile = imageTemp;
+      int sizeInBytes = imageTemp.lengthSync();
+      double sizeInMb = sizeInBytes / (1024 * 1024);
+      if (sizeInMb > 1) {
+        erroralert(context, "Error", "File size should be less then 1 MB");
+        return;
+      } else {
+        imageFile = imageTemp;
+      }
     } on PlatformException catch (e) {
       erroralert(context, "Error", 'Failed to pick image: $e.');
     }
@@ -67,6 +76,7 @@ class UserState extends ChangeNotifier {
         erroralert(context, "Error", error.toString());
       });
     }
+    imageFile = null;
   }
 
   Future<void> deleteUser(
@@ -110,6 +120,7 @@ class UserState extends ChangeNotifier {
         erroralert(context, "Error", error.toString());
       });
     }
+    imageFile = null;
   }
 
   Future<DocumentSnapshot> getUserById(BuildContext context, String id) async {
@@ -121,8 +132,8 @@ class UserState extends ChangeNotifier {
     String imagename = imageFile!.path.toString().split("/").last;
     String path = "/avatar/$name/$imagename";
     final ref = FirebaseStorage.instance.ref().child(path);
-    UploadTask uploadTask = ref.putFile(imageFile!);
-    final snapshot = await uploadTask.whenComplete(() => null);
+    uploadTask = ref.putFile(imageFile!);
+    final snapshot = await uploadTask!.whenComplete(() => null);
 
     final urlDownload = await snapshot.ref.getDownloadURL();
     avatarDownloadUrl = urlDownload;
@@ -157,6 +168,12 @@ class UserState extends ChangeNotifier {
         .where("name", isEqualTo: name)
         .get()
         .then((value) => value.size > 0 ? true : false);
+  }
+
+  Future<void> search(String searchText) async {
+    final listUser = await usersdb.where("name", isEqualTo: searchText).get();
+    seachList = listUser.docs;
+    notifyListeners();
   }
 }
 

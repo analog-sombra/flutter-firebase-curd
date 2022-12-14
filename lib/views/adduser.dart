@@ -1,4 +1,5 @@
 import 'package:fbasedbtuto/components/buttons.dart';
+import 'package:fbasedbtuto/state/multiseclectstate.dart';
 import 'package:fbasedbtuto/state/userstate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -35,10 +36,54 @@ class AddUser extends HookConsumerWidget {
         ),
       ),
       body: isLoading.value
-          ? const Center(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: CircularProgressIndicator(),
+          ? Center(
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: CircularProgressIndicator(),
+                  ),
+                  if (userStateW.uploadTask != null) ...[
+                    StreamBuilder(
+                        stream: userStateW.uploadTask!.snapshotEvents,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final data = snapshot.data;
+                            double progress =
+                                data!.bytesTransferred / data.totalBytes;
+
+                            return SizedBox(
+                              height: 40,
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  LinearProgressIndicator(
+                                    value: progress,
+                                    backgroundColor: themeW.primaryColor,
+                                    color: themeW.secondryBackgroundColor,
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      "${(100 * progress).roundToDouble()}%",
+                                      textScaleFactor: 1,
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w500,
+                                        color: themeW.textColor,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          } else {
+                            return const SizedBox(
+                              height: 10,
+                            );
+                          }
+                        })
+                  ],
+                ],
               ),
             )
           : SafeArea(
@@ -247,6 +292,8 @@ class AddUser extends HookConsumerWidget {
                                       isLoading.value = true;
                                       await userStateW.addUser(
                                           context, name.text, email.text);
+                                      ref.watch(multiSelectState).init(
+                                          await userStateW.getUserCount());
                                       isLoading.value = false;
                                     }
                                   },

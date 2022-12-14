@@ -246,7 +246,8 @@ void imageAlert(BuildContext context, String imageUrl) {
   );
 }
 
-void deleteMulAlert(BuildContext context, WidgetRef ref) async {
+void deleteMulAlert(
+    BuildContext context, WidgetRef ref, ValueNotifier isLoading) async {
   return await showDialog(
     context: context,
     builder: (context) => BackdropFilter(
@@ -305,10 +306,19 @@ void deleteMulAlert(BuildContext context, WidgetRef ref) async {
                       btnColor: const Color(0xffef4444),
                       btnText: "Delete",
                       textSize: 18,
-                      btnFunction: () {
+                      btnFunction: () async {
                         Navigator.pop(context);
-                        ref.watch(userState).deleteMultiUser(
-                            context, ref.watch(multiSelectState).userDelete);
+                        isLoading.value = true;
+
+                        await ref.watch(userState).deleteMultiUser(
+                              context,
+                              ref.watch(multiSelectState).userDelete,
+                            );
+                        ref.watch(multiSelectState).clearSelection(
+                              await ref.watch(userState).getUserCount(),
+                            );
+
+                        isLoading.value = false;
                       },
                     ),
                   ),

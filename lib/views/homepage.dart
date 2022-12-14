@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fbasedbtuto/components/alerts.dart';
 import 'package:fbasedbtuto/views/adduser.dart';
+import 'package:fbasedbtuto/views/seach.dart';
+import 'package:fbasedbtuto/views/userinfo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -20,8 +22,10 @@ class HomePage extends HookConsumerWidget {
     final themeW = ref.watch(appTheme);
     final userStateW = ref.watch(userState);
     final multiSelectStateW = ref.watch(multiSelectState);
+    TextEditingController search = useTextEditingController();
     ValueNotifier<bool> isLoading = useState(true);
     void init() async {
+      await themeW.loadTheme();
       final usercount = await userStateW.getUserCount();
       multiSelectStateW.init(usercount);
       isLoading.value = false;
@@ -41,11 +45,11 @@ class HomePage extends HookConsumerWidget {
         backgroundColor: themeW.backgroundColor,
         appBar: AppBar(
           leading: InkWell(
-            onTap: () {
+            onTap: () async {
               if (themeW.isLight) {
-                themeW.setDarkTheme();
+                await themeW.setDarkTheme();
               } else {
-                themeW.setLightTheme();
+                await themeW.setLightTheme();
               }
             },
             child: themeW.isLight
@@ -81,7 +85,22 @@ class HomePage extends HookConsumerWidget {
                   color: themeW.iconColor,
                 ),
               )
-            ],
+            ] else ...[
+              IconButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SeachPage(),
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.search,
+                  color: themeW.iconColor,
+                ),
+              )
+            ]
           ],
         ),
         floatingActionButton: isLoading.value
@@ -90,13 +109,7 @@ class HomePage extends HookConsumerWidget {
                 backgroundColor: themeW.primaryColor,
                 onPressed: () async {
                   if (multiSelectStateW.isMultiSelect) {
-                    isLoading.value = true;
-                    deleteMulAlert(
-                      context,
-                      ref,
-                    );
-                    multiSelectStateW
-                        .clearSelection(await userStateW.getUserCount());
+                    deleteMulAlert(context, ref, isLoading);
                     isLoading.value = false;
                   } else {
                     Navigator.push(
@@ -131,8 +144,8 @@ class HomePage extends HookConsumerWidget {
                               height: 20,
                             ),
                             if (data.docs.isEmpty) ...[
-                              const Padding(
-                                padding: EdgeInsets.all(15.0),
+                              Padding(
+                                padding: const EdgeInsets.all(15.0),
                                 child: Center(
                                   child: Text(
                                     "No User Exist in database",
@@ -140,12 +153,13 @@ class HomePage extends HookConsumerWidget {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w400,
-                                      color: Colors.black,
+                                      color: themeW.textColor,
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
+                            ] else
+                              ...[],
                             ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -163,12 +177,23 @@ class HomePage extends HookConsumerWidget {
                                   }
                                 },
                                 onTap: () {
-                                  multiSelectStateW.setValue(
-                                    index,
-                                    !multiSelectStateW.selectedItem[index],
-                                    data.docs[index].id,
-                                    data.docs[index]["avatar"].toString(),
-                                  );
+                                  if (multiSelectStateW.isMultiSelect) {
+                                    multiSelectStateW.setValue(
+                                      index,
+                                      !multiSelectStateW.selectedItem[index],
+                                      data.docs[index].id,
+                                      data.docs[index]["avatar"].toString(),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UserInto(
+                                          id: data.docs[index].id,
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 },
                                 child: SizedBox(
                                   width: MediaQuery.of(context).size.width,
