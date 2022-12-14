@@ -85,60 +85,69 @@ class UserInto extends HookConsumerWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: (userStateW.imageFile == null)
-                                ? CachedNetworkImage(
-                                    imageUrl: user.value["avatar"].toString(),
-                                    progressIndicatorBuilder:
-                                        (context, url, downloadProgress) =>
-                                            Center(
-                                      child: CircularProgressIndicator(
-                                          value: downloadProgress.progress),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        Image.asset(
-                                      "assets/images/avatar.png",
+                      Hero(
+                        tag: "avatar",
+                        child: Center(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: (userStateW.imageFile == null)
+                                  ? CachedNetworkImage(
+                                      imageUrl: user.value["avatar"].toString(),
+                                      progressIndicatorBuilder:
+                                          (context, url, downloadProgress) =>
+                                              Center(
+                                        child: CircularProgressIndicator(
+                                            value: downloadProgress.progress),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Image.asset(
+                                        "assets/images/avatar.png",
+                                        fit: BoxFit.cover,
+                                      ),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.file(
+                                      userStateW.imageFile!,
                                       fit: BoxFit.cover,
                                     ),
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.file(
-                                    userStateW.imageFile!,
-                                    fit: BoxFit.cover,
-                                  ),
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      Center(
-                        child: Text(
-                          user.value["name"],
-                          textScaleFactor: 1,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
+                      Hero(
+                        tag: "name",
+                        child: Center(
+                          child: Text(
+                            user.value["name"],
+                            textScaleFactor: 1,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(
                         height: 5,
                       ),
-                      Center(
-                        child: Text(
-                          user.value["email"],
-                          textScaleFactor: 1,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
+                      Hero(
+                        tag: "email",
+                        child: Center(
+                          child: Text(
+                            user.value["email"],
+                            textScaleFactor: 1,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),

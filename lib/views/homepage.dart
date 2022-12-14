@@ -239,40 +239,45 @@ class HomePage extends HookConsumerWidget {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    imageAlert(
-                                                      context,
-                                                      data.docs[index]["avatar"]
-                                                          .toString(),
-                                                    );
-                                                  },
-                                                  child: SizedBox(
-                                                    height: 50,
-                                                    width: 50,
-                                                    child: CachedNetworkImage(
-                                                      imageUrl: data.docs[index]
-                                                              ["avatar"]
-                                                          .toString(),
-                                                      progressIndicatorBuilder:
-                                                          (context, url,
-                                                                  downloadProgress) =>
-                                                              Center(
-                                                        child: CircularProgressIndicator(
-                                                            value:
-                                                                downloadProgress
-                                                                    .progress),
-                                                      ),
-                                                      errorWidget: (context,
-                                                              url, error) =>
-                                                          Image.asset(
-                                                        "assets/images/avatar.png",
+                                              Hero(
+                                                tag: "avatar",
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      imageAlert(
+                                                        context,
+                                                        data.docs[index]
+                                                                ["avatar"]
+                                                            .toString(),
+                                                      );
+                                                    },
+                                                    child: SizedBox(
+                                                      height: 50,
+                                                      width: 50,
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: data
+                                                            .docs[index]
+                                                                ["avatar"]
+                                                            .toString(),
+                                                        progressIndicatorBuilder:
+                                                            (context, url,
+                                                                    downloadProgress) =>
+                                                                Center(
+                                                          child: CircularProgressIndicator(
+                                                              value:
+                                                                  downloadProgress
+                                                                      .progress),
+                                                        ),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Image.asset(
+                                                          "assets/images/avatar.png",
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                         fit: BoxFit.cover,
                                                       ),
-                                                      fit: BoxFit.cover,
                                                     ),
                                                   ),
                                                 ),
@@ -289,24 +294,34 @@ class HomePage extends HookConsumerWidget {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      data.docs[index]["name"],
-                                                      textScaleFactor: 1,
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: themeW.textColor,
+                                                    Hero(
+                                                      tag: "name",
+                                                      child: Text(
+                                                        data.docs[index]
+                                                            ["name"],
+                                                        textScaleFactor: 1,
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color:
+                                                              themeW.textColor,
+                                                        ),
                                                       ),
                                                     ),
-                                                    Text(
-                                                      data.docs[index]["email"],
-                                                      textScaleFactor: 1,
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: themeW.textColor,
+                                                    Hero(
+                                                      tag: "email",
+                                                      child: Text(
+                                                        data.docs[index]
+                                                            ["email"],
+                                                        textScaleFactor: 1,
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color:
+                                                              themeW.textColor,
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
